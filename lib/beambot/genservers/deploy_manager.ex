@@ -1,24 +1,25 @@
 defmodule BeamBot.Genservers.DeployManager do
-  use GenServer
+  use GenServer, restart: :transient
 
   require Logger
   alias BeamBot.Ports.Provider
 
-  def create_workflow_process(payload) do
-    {:ok, pid} = start_link(payload)
-    GenServer.cast(pid, :parse_command)
+  def start_process(name, workflow) do
+    {:ok, pid} = start_child(name)
+    GenServer.cast(pid, {:start_process, workflow})
   end
 
-  def start_link(payload) do
-    GenServer.start_link(__MODULE__, %{payload: payload})
+  def start_child(name) do
+    DynamicSupervisor.start_child(:dynamic_deploy_sup, {__MODULE__, name})
+  end
+
+  def start_link(name) do
+    GenServer.start_link(__MODULE__, %{}, name: name)
   end
 
   @impl true
   def init(state) do
-    environments = %{
-      "office" => "us-east-1-office_deploy",
-      "cubex" => "us-east-1-int-cubex_deploy"
-    }
+    environments = BeamBot.Environments.environments()
 
     state = Map.put(state, :environments, environments)
 
@@ -26,17 +27,20 @@ defmodule BeamBot.Genservers.DeployManager do
   end
 
   @impl true
-  def handle_cast(:parse_command, state) do
-    case BeamBot.Workflow.parse(state.payload) do
-      {:ok, workflow} ->
-        handle_workflow_command(workflow)
-        {:noreply, Map.put(state, :workflow, workflow)}
+  def handle_cast({:start_process, workflow}, state) do
+    state =
+      state
+      |> Map.put(:workflow, workflow)
+      |> Map.put(:status, :in_process)
 
-      {:error, :could_not_parse_command, workflow} ->
-        message = BeamBot.Responses.unknown_command()
-        Provider.create_comment(workflow.owner, workflow.repo, workflow.issue_number, message)
-        {:noreply, state}
+    case workflow do
+      %{command: %BeamBot.Actions.Deploy{}} -> send(self(), :deploy)
+      %{command: %BeamBot.Actions.Lock{}} -> send(self(), :lock)
+      %{command: %BeamBot.Actions.Unlock{}} -> send(self(), :unlock)
+      %{command: %BeamBot.Actions.Help{}} -> send(self(), :help)
     end
+
+    {:noreply, state}
   end
 
   @impl true
@@ -92,7 +96,7 @@ defmodule BeamBot.Genservers.DeployManager do
         Provider.create_comment(owner, repo, issue_number, message)
     end
 
-    {:noreply, state}
+    {:stop, :normal, state}
   end
 
   @impl true
@@ -136,7 +140,7 @@ defmodule BeamBot.Genservers.DeployManager do
         :error
     end
 
-    {:noreply, state}
+    {:stop, :normal, state}
   end
 
   @impl true
@@ -176,7 +180,7 @@ defmodule BeamBot.Genservers.DeployManager do
         Provider.create_comment(owner, repo, issue_number, message)
     end
 
-    {:noreply, state}
+    {:stop, :normal, state}
   end
 
   @impl true
@@ -186,11 +190,6 @@ defmodule BeamBot.Genservers.DeployManager do
 
     Provider.create_comment(workflow.owner, workflow.repo, workflow.issue_number, message)
 
-    {:noreply, state}
+    {:stop, :normal, state}
   end
-
-  defp handle_workflow_command(%{command: %BeamBot.Actions.Deploy{}}), do: send(self(), :deploy)
-  defp handle_workflow_command(%{command: %BeamBot.Actions.Lock{}}), do: send(self(), :lock)
-  defp handle_workflow_command(%{command: %BeamBot.Actions.Unlock{}}), do: send(self(), :unlock)
-  defp handle_workflow_command(%{command: %BeamBot.Actions.Help{}}), do: send(self(), :help)
 end
