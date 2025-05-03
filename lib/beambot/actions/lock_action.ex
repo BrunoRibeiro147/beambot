@@ -9,9 +9,11 @@ defmodule BeamBot.Actions.Lock do
   end
 
   def changeset(attrs) do
+    environments = BeamBot.Environments.environments() |> Map.keys()
+
     %__MODULE__{}
     |> cast(attrs, [:environment, :reason])
     |> validate_required([:environment])
-    |> validate_inclusion(:environment, ["uat", "office"])
+    |> validate_inclusion(:environment, environments)
   end
 end
