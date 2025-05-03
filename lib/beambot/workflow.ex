@@ -6,7 +6,7 @@ defmodule BeamBot.Workflow do
   defstruct [:owner, :repo, :issue_number, :issue_link, :sender, :command, :branch]
 
   @spec parse(map()) ::
-          {:ok, %BeamBot.Workflow{}} | {:error, :could_not_parse_command, %BeamBot.Workflow{}}
+          {:ok, %BeamBot.Workflow{}} | {:error, :not_a_command} | {:error, :could_not_parse_command, %BeamBot.Workflow{}}
   def parse(params) do
     parsed_info = Ports.Provider.parse_webhook(params)
 
@@ -24,6 +24,9 @@ defmodule BeamBot.Workflow do
       {:ok, command} ->
         workflow = Map.put(workflow, :command, command)
         {:ok, workflow}
+
+      {:error, :not_a_command} ->
+        {:error, :not_a_command}
 
       _ ->
         {:error, :could_not_parse_command, workflow}
