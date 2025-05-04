@@ -1,4 +1,6 @@
 defmodule BeambotWeb.Plugs.VerifyGithubSignature do
+  @moduledoc false
+
   import Plug.Conn
 
   @behaviour Plug

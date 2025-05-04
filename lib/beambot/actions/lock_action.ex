@@ -1,4 +1,5 @@
 defmodule BeamBot.Actions.Lock do
+  @moduledoc false
   use Ecto.Schema
   import Ecto.Changeset
 

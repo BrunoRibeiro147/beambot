@@ -1,4 +1,5 @@
 defmodule BeamBot.Adapters.Providers.Github do
+  @moduledoc false
   @behaviour BeamBot.Ports.Provider
 
   import Tesla
@@ -56,7 +57,7 @@ defmodule BeamBot.Adapters.Providers.Github do
     end
   end
 
-  def get_istallations() do
+  def get_istallations do
     {:ok, token, _} = BeamBot.JWT.generate_token()
 
     client = get_client(token)
@@ -86,7 +87,7 @@ defmodule BeamBot.Adapters.Providers.Github do
     post(client, "repos/#{owner}/#{repo}/merges", %{body: payload})
   end
 
-  defp get_installation_id(), do: System.get_env("GITHUB_INSTALLATION_ID")
+  defp get_installation_id, do: System.get_env("GITHUB_INSTALLATION_ID")
 
   defp get_client(token) do
     Tesla.client([

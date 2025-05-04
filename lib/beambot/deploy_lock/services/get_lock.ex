@@ -1,4 +1,5 @@
 defmodule BeamBot.DeployLock.Services.GetLock do
+  @moduledoc false
   alias Beambot.Repo
   alias BeamBot.Schemas.DeployLock
 

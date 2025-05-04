@@ -25,7 +25,7 @@ defmodule BeamBot.Ports.Provider do
     adapter().create_authentication_token(jwt_token)
   end
 
-  defp adapter() do
+  defp adapter do
     Application.get_env(:beambot, __MODULE__)[:adapter]
   end
 end

@@ -1,7 +1,9 @@
 defmodule BeamBot.DeployLock.Services.CreateLock do
+  @moduledoc false
+
+  alias BeamBot.DeployLock.Services.GetLock
   alias Beambot.Repo
   alias BeamBot.Schemas.DeployLock
-  alias BeamBot.DeployLock.Services.GetLock
 
   def execute(environment, pr_number, locked_by, reason) do
     with {:error, :lock_not_found} <- GetLock.execute(environment),

@@ -1,7 +1,8 @@
 defmodule BeamBot.Responses do
+  @moduledoc false
   alias BeamBot.Utils
 
-  def unknown_command() do
+  def unknown_command do
     """
     Whoops! I don't recognize that command 🐐💥. Try #{Utils.get_bot_prefix()} help to see what I can actually do!
     """
@@ -106,11 +107,11 @@ defmodule BeamBot.Responses do
     """
   end
 
-  defp render_footer() do
+  defp render_footer do
     "Need anything else? Just call me with `#{Utils.get_bot_prefix()}` 🐐"
   end
 
-  def help_message() do
+  def help_message do
     bot_name = Utils.get_bot_name()
     bot_prefix = Utils.get_bot_prefix()
 

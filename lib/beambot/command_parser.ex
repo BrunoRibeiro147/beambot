@@ -1,4 +1,8 @@
 defmodule BeamBot.CommandParser do
+  @moduledoc """
+  Parse the messages and validates if it's supported
+  """
+
   alias BeamBot.Utils
 
   @valid_commands %{
@@ -6,10 +10,6 @@ defmodule BeamBot.CommandParser do
     "lock" => {BeamBot.Actions.Lock, [:environment, :reason]},
     "unlock" => {BeamBot.Actions.Unlock, [:environment]}
   }
-
-  def is_a_bot_command?(message) do
-    String.starts_with?(message, Utils.get_bot_prefix())
-  end
 
   @spec parse(binary()) :: {:ok, action :: map()} | {:error, any()}
   def parse(message) do

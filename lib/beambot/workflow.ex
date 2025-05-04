@@ -1,12 +1,25 @@
 defmodule BeamBot.Workflow do
+  @moduledoc false
   require Logger
 
   alias BeamBot.Ports
 
   defstruct [:owner, :repo, :issue_number, :issue_link, :sender, :command, :branch]
 
+  @type t :: %__MODULE__{
+    owner: String.t(),
+    repo: String.t(),
+    issue_number: integer(),
+    issue_link: String.t(),
+    sender: String.t(),
+    command: String.t(),
+    branch: String.t()
+  }
+
   @spec parse(map()) ::
-          {:ok, %BeamBot.Workflow{}} | {:error, :not_a_command} | {:error, :could_not_parse_command, %BeamBot.Workflow{}}
+          {:ok, BeamBot.Workflow.t()}
+          | {:error, :not_a_command}
+          | {:error, :could_not_parse_command, BeamBot.Workflow.t()}
   def parse(params) do
     parsed_info = Ports.Provider.parse_webhook(params)
 

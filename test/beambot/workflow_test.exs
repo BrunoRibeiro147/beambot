@@ -1,7 +1,7 @@
 defmodule Beambot.WorkflowTest do
   use ExUnit.Case, async: true
 
-  alias Beambot.Workflow
+  alias BeamBot.Workflow
 
   describe "parse/1" do
     setup do
@@ -13,9 +13,14 @@ defmodule Beambot.WorkflowTest do
           "login" => "BrunoRibeiro147"
         },
         "issue" => %{
+          "html_url" => "https://github.com/BrunoRibeiro147/Beambot/pull/2",
+          "number" => 2,
           "user" => %{
             "login" => "BrunoRibeiro147"
           }
+        },
+        "repository" => %{
+          "name" =>  "Beambot"
         }
       }
 
@@ -24,10 +29,13 @@ defmodule Beambot.WorkflowTest do
 
     test "should parse an valid command", %{params: params} do
       assert {:ok,
-              %Beambot.Workflow{
-                pr_owner: "BrunoRibeiro147",
+              %Workflow{
+                owner: "BrunoRibeiro147",
                 sender: "BrunoRibeiro147",
-                action: %BeamBot.Actions.Deploy{environment: "office"},
+                command: %BeamBot.Actions.Deploy{environment: "office"},
+                repo: "Beambot",
+                issue_number: 2,
+                issue_link: "https://github.com/BrunoRibeiro147/Beambot/pull/2",
                 branch: nil
               }} = Workflow.parse(params)
     end

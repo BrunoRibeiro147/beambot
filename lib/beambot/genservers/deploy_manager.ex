@@ -1,7 +1,12 @@
 defmodule BeamBot.Genservers.DeployManager do
+  @moduledoc false
   use GenServer, restart: :transient
 
   require Logger
+  alias Beambot.DeployEvent.Services.CreateDeployEvent
+  alias BeamBot.DeployLock.Services.CreateLock
+  alias BeamBot.DeployLock.Services.DeleteLock
+  alias BeamBot.DeployLock.Services.VerifyLock
   alias BeamBot.Ports.Provider
 
   def start_process(name, workflow) do
@@ -58,7 +63,7 @@ defmodule BeamBot.Genservers.DeployManager do
     action = "deploy"
 
     Task.start(fn ->
-      Beambot.DeployEvent.Services.CreateDeployEvent.execute(
+      CreateDeployEvent.execute(
         "in_process",
         issue_number,
         environment,
@@ -68,13 +73,13 @@ defmodule BeamBot.Genservers.DeployManager do
     end)
 
     with {:ok, :unlock} <-
-           BeamBot.DeployLock.Services.VerifyLock.execute(environment, issue_number),
+           VerifyLock.execute(environment, issue_number),
          message <-
            BeamBot.Responses.success_deploy(environment, issue_number, issue_link, action, sender) do
       Logger.warning("Deployed success")
       Provider.create_comment(owner, repo, issue_number, message)
 
-      Beambot.DeployEvent.Services.CreateDeployEvent.execute(
+      CreateDeployEvent.execute(
         "deployed",
         issue_number,
         environment,
@@ -112,7 +117,7 @@ defmodule BeamBot.Genservers.DeployManager do
 
     environment = command.environment
 
-    case BeamBot.DeployLock.Services.CreateLock.execute(
+    case CreateLock.execute(
            environment,
            issue_number,
            sender,
@@ -122,7 +127,7 @@ defmodule BeamBot.Genservers.DeployManager do
         message =
           BeamBot.Responses.success_lock(environment, issue_number, issue_link, "lock", sender)
 
-        Beambot.DeployEvent.Services.CreateDeployEvent.execute(
+        CreateDeployEvent.execute(
           "created",
           issue_number,
           environment,
@@ -156,7 +161,7 @@ defmodule BeamBot.Genservers.DeployManager do
 
     environment = command.environment
 
-    case BeamBot.DeployLock.Services.DeleteLock.execute(environment, sender) do
+    case DeleteLock.execute(environment, sender) do
       {:ok, _deploy_lock} ->
         message =
           BeamBot.Responses.success_unlock(

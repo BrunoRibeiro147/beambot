@@ -1,4 +1,8 @@
 defmodule BeambotWeb.Plugs.ValidateEvent do
+  @moduledoc """
+  Module to parse the payload and validates if it's a correct event sended from the provider
+  """
+
   import Plug.Conn
   require Logger
 
@@ -9,7 +13,7 @@ defmodule BeambotWeb.Plugs.ValidateEvent do
   def call(conn, _opts) do
     with event <- mount_event(conn),
          {:action_validation, true} <- {:action_validation, supported_action?(event)},
-         {:user_validation, true} <- {:user_validation, is_a_user?(conn)} do
+         {:user_validation, true} <- {:user_validation, user?(conn)} do
       conn
     else
       {:action_validation, false} ->
@@ -33,7 +37,7 @@ defmodule BeambotWeb.Plugs.ValidateEvent do
     "#{github_event}.#{action}"
   end
 
-  defp is_a_user?(conn) do
+  defp user?(conn) do
     type = get_in(conn, [Access.key!(:params), "sender", "type"])
 
     case type do

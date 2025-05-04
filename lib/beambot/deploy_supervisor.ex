@@ -1,4 +1,5 @@
 defmodule Beambot.DeploySupervisor do
+  @moduledoc false
   use Supervisor
 
   def start_link(_args) do

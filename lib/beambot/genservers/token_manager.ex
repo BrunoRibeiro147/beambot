@@ -1,8 +1,12 @@
 defmodule BeamBot.Genservers.TokenManager do
+  @moduledoc """
+  GenServer that creates an intallation token and cached it
+  """
+
   use GenServer
 
-  alias BeamBot.Ports.Provider
   alias BeamBot.JWT
+  alias BeamBot.Ports.Provider
   require Logger
 
   @table :github_token_manager
@@ -15,7 +19,7 @@ defmodule BeamBot.Genservers.TokenManager do
     GenServer.call(__MODULE__, {:get_or_create_token, installation_id})
   end
 
-  defp refresh_token() do
+  defp refresh_token do
     {:ok, jwt_token, _} = JWT.generate_token()
     Provider.create_authentication_token(jwt_token)
   end

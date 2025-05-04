@@ -1,4 +1,8 @@
 defmodule BeamBot.JWT do
+  @moduledoc """
+  Module to handle JWT creation for github authentication
+  """
+
   use Joken.Config
 
   @impl true

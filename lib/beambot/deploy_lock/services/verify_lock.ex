@@ -1,4 +1,5 @@
 defmodule BeamBot.DeployLock.Services.VerifyLock do
+  @moduledoc false
   alias BeamBot.DeployLock.Services.GetLock
 
   def execute(environment, issue_number) do
