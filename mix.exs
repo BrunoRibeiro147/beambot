@@ -56,7 +56,8 @@ defmodule Beambot.MixProject do
       {:bandit, "~> 1.5"},
       {:tesla, "~> 1.11"},
       {:joken, "~> 2.6"},
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:ex_machina, "~> 2.8.0", only: :test},
     ]
   end
 

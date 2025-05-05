@@ -25,6 +25,7 @@ defmodule Beambot.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Beambot.DataCase
+      import BeamBot.Factory
     end
   end
 

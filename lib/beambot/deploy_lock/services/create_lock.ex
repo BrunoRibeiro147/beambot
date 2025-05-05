@@ -11,7 +11,7 @@ defmodule BeamBot.DeployLock.Services.CreateLock do
            apply_changeset(environment, pr_number, locked_by, reason) do
       Repo.insert(changeset)
     else
-      {:ok, :lock} ->
+      {:ok, _lock} ->
         {:error, :environment_already_locked}
 
       changeset ->
