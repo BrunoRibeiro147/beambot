@@ -20,7 +20,7 @@ defmodule Beambot.WorkflowTest do
           }
         },
         "repository" => %{
-          "name" =>  "Beambot"
+          "name" => "Beambot"
         }
       }
 

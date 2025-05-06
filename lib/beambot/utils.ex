@@ -1,7 +1,7 @@
 defmodule BeamBot.Utils do
   @moduledoc false
   def get_bot_name do
-    System.get_env("BOT_NAME")
+    System.get_env("BOT_NAME", "beambot")
   end
 
   def get_bot_prefix do

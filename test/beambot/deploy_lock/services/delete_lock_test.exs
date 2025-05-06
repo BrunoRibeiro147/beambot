@@ -14,7 +14,8 @@ defmodule Beambot.DeployLock.Services.DeleteLockTest do
     test "should return an error if the person trying to unlock was not the one the lock it" do
       insert(:deploy_lock)
 
-      assert {:error, :user_not_allowed_to_unlock ,%DeployLock{}} = DeleteLock.execute("office", "Test")
+      assert {:error, :user_not_allowed_to_unlock, %DeployLock{}} =
+               DeleteLock.execute("office", "Test")
     end
   end
 end

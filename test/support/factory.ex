@@ -1,5 +1,5 @@
 defmodule BeamBot.Factory do
-@moduledoc """
+  @moduledoc """
   Core applications factories (ExMachina)
   """
 
