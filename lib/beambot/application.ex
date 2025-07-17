@@ -15,6 +15,8 @@ defmodule Beambot.Application do
       {BeamBot.Genservers.TokenManager, %{}},
       # Start the Finch HTTP client for sending emails
       {Finch, name: Beambot.Finch},
+      {Registry, keys: :unique, name: BeamBot.Registry},
+      Beambot.DeploySupervisor,
       # Start a worker by calling: Beambot.Worker.start_link(arg)
       # {Beambot.Worker, arg},
       # Start to serve requests, typically the last entry

@@ -19,7 +19,7 @@ defmodule BeamBot.Genservers.DeployManager do
   end
 
   def start_link(name) do
-    GenServer.start_link(__MODULE__, %{}, name: name)
+    GenServer.start_link(__MODULE__, %{}, name: {:via, Registry, {BeamBot.Registry, name}})
   end
 
   @impl true
@@ -64,7 +64,7 @@ defmodule BeamBot.Genservers.DeployManager do
 
     Task.start(fn ->
       CreateDeployEvent.execute(
-        "in_process",
+        "in_progress",
         issue_number,
         environment,
         action,
@@ -88,6 +88,15 @@ defmodule BeamBot.Genservers.DeployManager do
       )
     else
       {:ok, :lock} ->
+        CreateDeployEvent.execute(
+          "failed",
+          issue_number,
+          environment,
+          action,
+          sender,
+          "environment is locked"
+        )
+
         message =
           BeamBot.Responses.failed_deploy(
             :lock,

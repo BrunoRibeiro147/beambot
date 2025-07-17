@@ -108,7 +108,7 @@ defmodule BeamBot.Responses do
   end
 
   defp render_footer do
-    "Need anything else? Just call me with `#{Utils.get_bot_prefix()}` 🐐"
+    "Need anything else? Just call me with `#{Utils.get_bot_prefix()}`"
   end
 
   def help_message do
@@ -116,7 +116,7 @@ defmodule BeamBot.Responses do
     bot_prefix = Utils.get_bot_prefix()
 
     """
-    🐐 #{String.capitalize(bot_name)} - Available Commands:
+    #{String.capitalize(bot_name)} - Available Commands:
 
     `#{bot_prefix} deploy <environment>`
       Create a deploy on the specified environment. Ex: `#{bot_prefix} deploy staging`

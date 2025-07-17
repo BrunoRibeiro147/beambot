@@ -14,7 +14,7 @@ defmodule BeamBot.JWT do
     priv_path = :code.priv_dir(:beambot) |> to_string()
     # TODO: Get this key from a File Storage instead of the server priv directory
     private_key_name = System.get_env("PRIVATE_KEY_NAME")
-    private_key_path = priv_path <> "/keys" <> private_key_name
+    private_key_path = priv_path <> "/keys/" <> private_key_name
 
     priv_key = File.read!(private_key_path)
     Joken.Signer.create("RS256", %{"pem" => priv_key})

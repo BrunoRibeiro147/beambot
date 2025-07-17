@@ -31,3 +31,6 @@ config :logger, level: :warning
 
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
+
+# Adapters
+config :beambot, BeamBot.Ports.Provider, adapter: BeamBot.Adapters.Providers.ProviderMock

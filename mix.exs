@@ -57,7 +57,8 @@ defmodule Beambot.MixProject do
       {:tesla, "~> 1.11"},
       {:joken, "~> 2.6"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-      {:ex_machina, "~> 2.8.0", only: :test}
+      {:ex_machina, "~> 2.8.0", only: :test},
+      {:mox, "~> 1.0", only: :test}
     ]
   end
 

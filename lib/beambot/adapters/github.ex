@@ -24,6 +24,29 @@ defmodule BeamBot.Adapters.Providers.Github do
     end
   end
 
+  def list_commits(owner, repo, branch_name) do
+    installation_id = get_installation_id()
+    {:ok, token} = TokenManager.get_installation_token(installation_id)
+
+    client = get_client(token)
+
+    case get(client, "repos/#{owner}/#{repo}/commits?sha=#{branch_name}") do
+      {:ok, %Tesla.Env{status: 200, body: response}} ->
+        {:ok, process_commits(response)}
+
+      error ->
+        Logger.error("Error when try to create a comment: #{inspect(error)}")
+        {:error, :comment_not_created}
+    end
+  end
+
+  defp process_commits(response) do
+    Enum.map(response, fn data ->
+      commit = Map.get(data, "commit")
+      %{message: commit["message"], sha: commit["tree"]["sha"]}
+    end)
+  end
+
   @impl true
   def parse_webhook(payload) do
     sender = get_in(payload, ["sender", "login"])

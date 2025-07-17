@@ -8,7 +8,7 @@ defmodule BeambotWeb.GithubWebhook do
   def webhook(conn, params) do
     case BeamBot.Workflow.parse(params) do
       {:ok, workflow} ->
-        process_name = to_string(workflow.issue_number)
+        process_name = "deploy_process_" <> to_string(workflow.issue_number)
         DeployManager.start_process(process_name, workflow)
         send_resp(conn, 200, "ok")
 
