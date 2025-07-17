@@ -38,7 +38,10 @@ defmodule Beambot.Adapters.Anthropic do
       {:ok, %Tesla.Env{status: 200, body: response}} ->
         content = List.first(response["content"])
 
-        {:ok, Map.get(content, "text")}
+        {:ok,
+         Map.get(content, "text")
+         |> then(&Regex.run(~r/```json\n(.*?)```/ms, &1))
+         |> then(fn [_, json] -> Jason.decode!(json) end)}
 
       {:ok, %Tesla.Env{status: status, body: body}} ->
         Logger.error(%{status: status, body: body})
