@@ -80,11 +80,11 @@ defmodule BeamBot.Adapters.Providers.Github do
     end
   end
 
-  def get_istallations do
+  def get_installations(owner) do
     {:ok, token, _} = BeamBot.JWT.generate_token()
 
     client = get_client(token)
-    get(client, "installation/repositories")
+    get(client, "/users/#{owner}/installation")
   end
 
   def get_pull_request(owner, repo, issue_number) do
